@@ -7,7 +7,6 @@ f = open(filename,"r")
 q = open("/tmp/spectre_results.csv","a+")
 p = open("/tmp/scandata","r")
 x = []
-y = []
 for line in f:
     line = line.rstrip('\n')
     x.append(line)
@@ -22,16 +21,8 @@ def execute(s):
         os.system(cmd3)
         cmd4 = "ssh -t {0} sudo /export/home/bs/NagiosCommand/NagiosAgent/libexec/os-scan.sh meltdown > /tmp/scandata".format(s)
         os.system(cmd4)
-        for line in p:
-            if '#' in line:
-                pass
-            else:
-                y.append(line.replace('\n',';'))
-        op = ';'.join(y)
-        lock.acquire()
-        q.write("{0};{1}\n".format(s,op))
-        lock.release()
-        del y
+        os.system("echo -e '$server;$scandata' >> /tmp/spectre_results.csv")
+        
 def scp():
     cmdx = "scp /tmp/spectre_results.csv splk001:/app01/splunk/var/run/splunk/csv/spectre-meltdown.csv"
     os.system(cmdx)
