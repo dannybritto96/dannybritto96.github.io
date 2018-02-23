@@ -21,7 +21,7 @@ def execute(s):
         cmd4 = "ssh -t {0} sudo /export/home/bs/NagiosCommand/NagiosAgent/libexec/os-scan.sh meltdown > /tmp/scandata".format(s)
         os.system(cmd4)
         lock.acquire()
-        scandata = commands.getoutput("cat /tmp/scandata |grep -v '#'|tr '\n' ';'")
+        scandata = subprocess.check_output("cat /tmp/scandata |grep -v '#'|tr '\n' ';'",shell=True)
         print scandata
         cmdz = "echo -e '${0};{1}' >> /tmp/out_spectre_results.csv".format(s,scandata)
         os.system(cmdz)
