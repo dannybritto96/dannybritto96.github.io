@@ -1,6 +1,7 @@
 import os
 import sys
 import threading
+import commands
 filename = sys.argv[1]
 lock = threading.Lock()
 f = open(filename,"r")
@@ -21,8 +22,12 @@ def execute(s):
         os.system(cmd3)
         cmd4 = "ssh -t {0} sudo /export/home/bs/NagiosCommand/NagiosAgent/libexec/os-scan.sh meltdown > /tmp/scandata".format(s)
         os.system(cmd4)
-        os.system("echo -e '$server;$scandata' >> /tmp/spectre_results.csv")
-        
+        lock.acquire()
+        scandata = commands.getoutput("cat /tmp/scandata |grep -v '#'|tr '\n' ';'")
+        cmdz = "echo -e '$server;{0}' >> /tmp/spectre_results.csv".format(scandata)
+        os.system(cmdz)
+        lock.release()
+
 def scp():
     cmdx = "scp /tmp/spectre_results.csv splk001:/app01/splunk/var/run/splunk/csv/spectre-meltdown.csv"
     os.system(cmdx)
