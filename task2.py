@@ -13,9 +13,9 @@ for line in f:
     x.append(line)
 f.close()
 def execute(s):
-    cmd1 = "ssh -o PasswordAuthentication=no -o ConnectTimeout=1 -o StrictHostKeyChecking=no {0}".format(s)
-    y = os.system(cmd1)
-    if y == 0:
+    cmd1 = "ssh -o PasswordAuthentication=no -o ConnectTimeout=1 -o StrictHostKeyChecking=no {0} exit".format(s)
+    z = os.system(cmd1)
+    if z == 0:
         cmd2 = "scp /export/home/bs/NagiosCommand/NagiosAgent/libexec/os-scan.sh {0}:/export/home/bs/NagiosCommand/NagiosAgent/libexec/os-scan.sh".format(s)
         os.system(cmd2)
         cmd3 = "scp /export/home/bs/NagiosCommand/NagiosAgent/libexec/spectre-meltdown-checker.sh {0}:/export/home/bs/NagiosCommand/NagiosAgent/libexec/spectre-meltdown-checker.sh".format(s)
@@ -26,11 +26,12 @@ def execute(s):
             if '#' in line:
                 pass
             else:
-                y.append(line.replace('\n',''))
+                y.append(line.replace('\n',';'))
         op = ';'.join(y)
         lock.acquire()
         q.write("{0};{1}\n".format(s,op))
-        lock.release()    
+        lock.release()
+        del y
 def scp():
     cmdx = "scp /tmp/spectre_results.csv splk001:/app01/splunk/var/run/splunk/csv/spectre-meltdown.csv"
     os.system(cmdx)
