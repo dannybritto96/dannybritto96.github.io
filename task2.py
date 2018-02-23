@@ -5,8 +5,6 @@ import commands
 filename = sys.argv[1]
 lock = threading.Lock()
 f = open(filename,"r")
-q = open("/tmp/spectre_results.csv","a+")
-p = open("/tmp/scandata","r")
 x = []
 for line in f:
     line = line.rstrip('\n')
@@ -24,7 +22,7 @@ def execute(s):
         os.system(cmd4)
         lock.acquire()
         scandata = commands.getoutput("cat /tmp/scandata |grep -v '#'|tr '\n' ';'")
-        cmdz = "echo -e '$server;{0}' >> /tmp/spectre_results.csv".format(scandata)
+        cmdz = "echo -e '$server;{0}' >> /tmp/out_spectre_results.csv".format(scandata)
         os.system(cmdz)
         lock.release()
 
