@@ -39,7 +39,5 @@ while threading.active_count()>1:
     pass
 else:
     scp()
-    p.close()
-    q.close()
     
         
