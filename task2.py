@@ -22,7 +22,8 @@ def execute(s):
         os.system(cmd4)
         lock.acquire()
         scandata = commands.getoutput("cat /tmp/scandata |grep -v '#'|tr '\n' ';'")
-        cmdz = "echo -e '$server;{0}' >> /tmp/out_spectre_results.csv".format(scandata)
+        print scandata
+        cmdz = "echo -e '${0};{1}' >> /tmp/out_spectre_results.csv".format(s,scandata)
         os.system(cmdz)
         lock.release()
 
